@@ -1,0 +1,10 @@
+[alias]
+	s = status
+	ch = checkout
+	b = branch
+	pl = pull
+	p = push
+	a = add
+	c = commit
+[user]
+	name = pragadeeshsureshbabu

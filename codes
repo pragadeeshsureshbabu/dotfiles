@@ -1,0 +1,131 @@
+aws s3 cp s3://stx-apollo-pr-datascience-internal/test-cell/airflow/emr_setup.sh /home/hadoop/workspace/emr_setup.sh
+bash /home/hadoop/workspace/emr_setup.sh
+
+sudo python3 -m pip install --upgrade pip
+sudo python3 -m pip install wheel oauth2client gspread pandas boto3 numpy==1.16.5 sklearn fastparquet
+
+-------------------------------------------------------------------
+okta-penguin
+cd ~/repos/datascience/utils/seabright
+python test_script.py
+1. Wireguard Turn on 
+2. "javax.jdo.option.ConnectionPassword": "seabright-penguin/metastore-rds"
+3. 172.31.22.97:8888/lab
+4. Pasword = seabright-penguin
+-------------------------------------------------------------------
+aws s3 cp s3://stx-apollo-pr-datascience-internal/personalization_models/emr_setup.sh /home/hadoop/workspace/emr_setup.sh
+bash /home/hadoop/workspace/emr_setup.sh
+
+export PYSPARK_PYTHON=python3
+command-runner.jar
+-------------------------------------------------------------------
+########################################################################
+sudo vi /etc/spark/conf/spark-defaults.conf
+spark.driver.maxResultSize 50G
+spark.driver.memory 50G
+spark.executor.memory 50G
+########################################################################
+For redshift access- 
+1. ssh into workspace prod, and then 
+2. PGPASSWORD=hnPQ7lVZBw553KNZ psql -h apollo-pr-rs-1w88arzqn7xf8-rscluster-3zgpr0lgtid3.cuctsaq9dzmm.us-west-2.redshift.amazonaws.com -p 5439 -d dev -U pragadeesh_sureshbabu
+########################################################################
+Valkyrie - 
+Airflow UI and OpenVPn
+PSQL - PGPASSWORD=password psql -h prod-us-west-2-policy-engine.cgh92wpi5hzt.us-west-2.rds.amazonaws.com -p 5432 -U policy -d policy
+
+[profile valkyrie-prod]
+source_profile = assume-dsUser
+role_arn       = arn:aws:iam::777261283401:role/dsUser
+region         = us-west-2
+
+Valkyrie Steps
+--------------
+aws s3 cp s3://valkyrie-prod-emr/scripts/bootstrap_w_psycopg2-py3.sh /tmp/bootstrap_w_psycopg2-py3.sh
+bash /tmp/bootstrap_w_psycopg2-py3.sh 
+aws s3 cp s3://valkyrie-prod-emr/scripts/bootstrap_w_psycopg2-binary.sh /tmp/bootstrap_w_psycopg2-binary.sh
+bash /tmp/bootstrap_w_psycopg2-binary.sh
+
+aws s3 cp s3://valkyrie-prod-data-science/pragadeesh/valkyrie_poc.zip /tmp/valkyrie_poc-valkyrie_poc/valkyrie_poc.zip
+unzip -o /tmp/valkyrie_poc-valkyrie_poc/valkyrie_poc.zip -d /tmp/valkyrie_poc-valkyrie_poc
+
+aws s3 cp s3://valkyrie-prod-emr/haskell/artifacts/qa/2022-01-21/634ebfe3c80ba320b27a9d52743897fc6b9fe769 /tmp/haskell-binaries --recursive
+
+spark-submit --py-files /tmp/valkyrie_poc-valkyrie_poc/valkyrie_poc.zip /tmp/valkyrie_poc-valkyrie_poc/valkyrie_poc/offer/create_policy_config.py -a valkyrie-prod -v valkyrie__v4 -o T017MA -H /tmp/haskell-binaries -P postgresql://policy:password@policy-engine-rds.valkyrie-prod.takt.cc/policy
+(Inserted policy as 258)
+
+spark-submit --py-files /tmp/valkyrie_poc-valkyrie_poc/valkyrie_poc.zip /tmp/valkyrie_poc-valkyrie_poc/valkyrie_poc/population/create_blackwhitelists.py -a valkyrie-prod -d valkyrie__v4
+
+spark-submit --py-files /tmp/valkyrie_poc-valkyrie_poc/valkyrie_poc.zip /tmp/valkyrie_poc-valkyrie_poc/valkyrie_poc/views/source_data_views.py -a valkyrie-prod -v valkyrie__views -c LATEST -ap LATEST -ad LATEST -f LATEST -pr LATEST
+
+spark-submit --py-files /tmp/valkyrie_poc-valkyrie_poc/valkyrie_poc.zip /tmp/valkyrie_poc-valkyrie_poc/valkyrie_poc/customer_attributes/generate_raw_customer_attributes.py --account-name valkyrie-prod --output-db-version valkyrie__v4 --run-date 2021-10-13
+
+spark-submit --py-files /tmp/valkyrie_poc-valkyrie_poc/valkyrie_poc.zip /tmp/valkyrie_poc-valkyrie_poc/valkyrie_poc/customer_attributes/generate_offer_window_customer_attributes.py -a valkyrie-prod -r 2021-10-13 -V valkyrie__views -o valkyrie__v4 -s 2021-10-28 -e 2022-02-01 -b T017MA -C pl
+
+spark-submit --py-files /tmp/valkyrie_poc-valkyrie_poc/valkyrie_poc.zip /tmp/valkyrie_poc-valkyrie_poc/valkyrie_poc/segment/generate_customer_segments.py -a valkyrie-prod -v valkyrie__v4 -r 2021-10-13
+
+spark-submit --py-files /tmp/valkyrie_poc-valkyrie_poc/valkyrie_poc.zip /tmp/valkyrie_poc-valkyrie_poc/valkyrie_poc/segment/generate_target_segments.py -a valkyrie-prod -v valkyrie__v4 -o T017MA -r 2021-10-13
+
+spark-submit --py-files /tmp/valkyrie_poc-valkyrie_poc/valkyrie_poc.zip /tmp/valkyrie_poc-valkyrie_poc/valkyrie_poc/population/update_population_assignments.py -a valkyrie-prod -d valkyrie__v4 -p T017MA -m T016MB -r 2021-10-13 -s 2021-06-07 -n
+
+Models
+------
+
+spark-submit --py-files /tmp/valkyrie_poc-valkyrie_poc/valkyrie_poc.zip /tmp/valkyrie_poc-valkyrie_poc/valkyrie_poc/ts_predictor.py -s 2021-10-28 -e 2022-02-01 -r 2021-10-13 -o T017MA -v valkyrie__v4 -F -M -C -c
+
+spark-submit --py-files /tmp/valkyrie_poc-valkyrie_poc/valkyrie_poc.zip /tmp/valkyrie_poc-valkyrie_poc/valkyrie_poc/baseline_model.py -D valkyrie__v4 -H 2021-10-13 -o T017MA -s 2021-10-28 -e 2022-02-01 -F -M
+
+spark-submit --py-files /tmp/valkyrie_poc-valkyrie_poc/valkyrie_poc.zip /tmp/valkyrie_poc-valkyrie_poc/valkyrie_poc/partner_modeling.py -v 2021-10-13 -F -M -P MD -d valkyrie__v4
+
+spark-submit --py-files /tmp/valkyrie_poc-valkyrie_poc/valkyrie_poc.zip /tmp/valkyrie_poc-valkyrie_poc/valkyrie_poc/partner_modeling.py -v 2021-10-13 -F -M -P CL -T 30 -V 1 -d valkyrie__v4
+
+spark-submit --py-files /tmp/valkyrie_poc-valkyrie_poc/valkyrie_poc.zip /tmp/valkyrie_poc-valkyrie_poc/valkyrie_poc/partner_modeling.py -v 2021-10-13 -F -M -P VZ -d valkyrie__v4
+
+spark-submit --py-files /tmp/valkyrie_poc-valkyrie_poc/valkyrie_poc.zip /tmp/valkyrie_poc-valkyrie_poc/valkyrie_poc/partner_modeling.py -v 2021-10-13 -F -M -P HZ -d valkyrie__v4
+
+spark-submit --py-files /tmp/valkyrie_poc-valkyrie_poc/valkyrie_poc.zip /tmp/valkyrie_poc-valkyrie_poc/valkyrie_poc/partner_modeling.py -v 2021-10-13 -F -M -P MW -d valkyrie__v4
+
+spark-submit --py-files /tmp/valkyrie_poc-valkyrie_poc/valkyrie_poc.zip /tmp/valkyrie_poc-valkyrie_poc/valkyrie_poc/partner_modeling.py -v 2021-10-13 -F -M -P MH -d valkyrie__v4
+
+spark-submit --py-files /tmp/valkyrie_poc-valkyrie_poc/valkyrie_poc.zip /tmp/valkyrie_poc-valkyrie_poc/valkyrie_poc/offer/generate_bonus_scores.py -a valkyrie-prod -v valkyrie__v4 -e 2021-10-10 -r 2021-10-13
+
+Optimization
+------------
+spark-submit --py-files /tmp/valkyrie_poc-valkyrie_poc/valkyrie_poc.zip /tmp/valkyrie_poc-valkyrie_poc/valkyrie_poc/optimization/softmax_approach.py -a valkyrie-prod -v valkyrie__v4 -o T015MA -r 2021-09-29 -t 3
+
+spark-submit --py-files /tmp/valkyrie_poc-valkyrie_poc/valkyrie_poc.zip /tmp/valkyrie_poc-valkyrie_poc/valkyrie_poc/optimization/softmax_approach.py -a valkyrie-prod -v valkyrie__v4 -o T015MA -r 2021-09-29 -t 5
+
+spark-submit --py-files /tmp/valkyrie_poc-valkyrie_poc/valkyrie_poc.zip /tmp/valkyrie_poc-valkyrie_poc/valkyrie_poc/optimization/softmax_approach.py -a valkyrie-prod -v valkyrie__v4 -o T015MA -r 2021-09-29 -t 7
+
+spark-submit --py-files /tmp/valkyrie_poc-valkyrie_poc/valkyrie_poc.zip /tmp/valkyrie_poc-valkyrie_poc/valkyrie_poc/optimization/softmax_approach.py -a valkyrie-prod -v valkyrie__v4 -o T015MA -r 2021-09-29 -t 9
+-------
+spark-submit --py-files /tmp/valkyrie_poc-valkyrie_poc/valkyrie_poc.zip /tmp/valkyrie_poc-valkyrie_poc/valkyrie_poc/optimization/construct_optimization_result.py -a valkyrie-prod -d valkyrie__v4 -i T015MA -o softmax_ctrl_matched_nir_times_optin_2021_09_29_variable_k_3 -p 311 -b 229
+
+spark-submit --py-files /tmp/valkyrie_poc-valkyrie_poc/valkyrie_poc.zip /tmp/valkyrie_poc-valkyrie_poc/valkyrie_poc/optimization/construct_optimization_result.py -a valkyrie-prod -d valkyrie__v4 -i T015MA -o softmax_ctrl_matched_nir_times_optin_2021_09_29_variable_k_5 -p 311 -b 229
+
+spark-submit --py-files /tmp/valkyrie_poc-valkyrie_poc/valkyrie_poc.zip /tmp/valkyrie_poc-valkyrie_poc/valkyrie_poc/optimization/construct_optimization_result.py -a valkyrie-prod -d valkyrie__v4 -i T015MA -o softmax_ctrl_matched_nir_times_optin_2021_09_29_variable_k_7 -p 311 -b 229
+
+spark-submit --py-files /tmp/valkyrie_poc-valkyrie_poc/valkyrie_poc.zip /tmp/valkyrie_poc-valkyrie_poc/valkyrie_poc/optimization/construct_optimization_result.py -a valkyrie-prod -d valkyrie__v4 -i T015MA -o softmax_ctrl_matched_nir_times_optin_2021_09_29_variable_k_9 -p 311 -b 229
+-------
+spark-submit --py-files /tmp/valkyrie_poc-valkyrie_poc/valkyrie_poc.zip /tmp/valkyrie_poc-valkyrie_poc/valkyrie_poc/optimization/evaluate_approach.py -a valkyrie-prod -v valkyrie__v4 -o T015MA -r 2021-10-13 -m ctrl_matched_nir_times_optin
+
+Variant Assignment
+------------------
+spark-submit --py-files /tmp/valkyrie_poc-valkyrie_poc/valkyrie_poc.zip /tmp/valkyrie_poc-valkyrie_poc/valkyrie_poc/optimization/variant_assigner_new.py -a valkyrie-prod -v valkyrie__v4 -o T017MA -r 2021-10-13 -ap SOFTMAX
+
+
+spark-submit --py-files /tmp/valkyrie_poc-valkyrie_poc/valkyrie_poc.zip /tmp/valkyrie_poc-valkyrie_poc/valkyrie_poc/qa/oa/params.py -a valkyrie-prod -v valkyrie__v4 insert -o T017MA -oa 2021-10-13 -tc 2021-06-07 -cp 2021-10-10 -ca 2021-10-13 -ow 2021-10-13 -s 2021-10-13 -ts 2021-10-13 -pa 2021-10-13 -t 2021-10-13 -fs 2021-10-13 -bfs 2021-10-13 -bs 2021-10-13 -pm 2021-10-13
+
+spark-submit --py-files /tmp/valkyrie_poc-valkyrie_poc/valkyrie_poc.zip /tmp/valkyrie_poc-valkyrie_poc/valkyrie_poc/qa/oa/preOA_models.py -a valkyrie-prod -v valkyrie__v4 -o T017MA -oa 2021-10-13
+
+spark-submit --py-files /tmp/valkyrie_poc-valkyrie_poc/valkyrie_poc.zip /tmp/valkyrie_poc-valkyrie_poc/valkyrie_poc/offer/combine_offer_data.py -a valkyrie-prod -v valkyrie__v4 -o T017MA -r 2021-10-13
+
+OA DAG
+------
+./script/ops.sh test-dag --profile valkyrie-prod --role job-manager --dag valkyrie.policy.emr --run-date 2021-10-13 --conf '{"policy_name":"T017MA_policy","batch_name":"T017MA","offer_id":"T017MA","hive_db_version":"v4","auto_cluster_override":"valkyrie-prod-data-science-OA-EMR5.8","batch_start_date":"2021-10-28","batch_end_date":"2022-01-31","is_test":false}'
+
+[profile valkyrie-prod]
+source_profile = assume-dsUser
+role_arn       = arn:aws:iam::777261283401:role/dsUser
+region         = us-west-2
+
+spark-submit --py-files /tmp/valkyrie_poc-valkyrie_poc/valkyrie_poc.zip /tmp/valkyrie_poc-valkyrie_poc/valkyrie_poc/measurement/measurement_data_dump.py -a valkyrie-prod -d valkyrie__v4 --batch-name T015MA --run-date 2021-10-17

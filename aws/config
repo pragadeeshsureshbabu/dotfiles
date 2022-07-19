@@ -1,0 +1,103 @@
+[okta]
+aws_saml_url = home/amazon_aws/0oa15rvnlekcJUC8I2p7/272
+
+[profile assume-dsUser]
+role_arn = arn:aws:iam::986540106621:role/assumeDS
+region   = us-west-2
+
+[profile takt-infra]
+source_profile = assume-dsUser
+role_arn       = arn:aws:iam::986540106621:role/dsUser
+region         = us-west-2
+
+[profile sbux-prod]
+source_profile = assume-dsUser
+role_arn       = arn:aws:iam::679770817262:role/dsUser
+region         = us-west-2
+
+[profile takt-e2e2]
+source_profile = assume-dsUser
+role_arn       = arn:aws:iam::557759327847:role/dsUser
+region         = us-west-2
+
+[profile takt-dev]
+source_profile = assume-dsUser
+role_arn       = arn:aws:iam::580677866545:role/dsUser
+region         = us-west-2
+
+[profile takt-e2e3]
+source_profile = assume-dsUser
+role_arn       = arn:aws:iam::334481709624:role/dsUser
+region         = us-west-2
+
+[profile takt-e2e4]
+source_profile = assume-dsUser
+role_arn       = arn:aws:iam::314531994667:role/dsUser
+region         = us-west-2
+
+[profile sbux-staging]
+source_profile = assume-dsUser
+role_arn       = arn:aws:iam::201655352888:role/dsUser
+region         = us-west-2
+
+[profile takt-qa]
+source_profile = assume-dsUser
+role_arn       = arn:aws:iam::527074324824:role/dsUser
+region         = us-west-2
+
+[profile takt-e2e]
+source_profile = assume-dsUser
+role_arn       = arn:aws:iam::631739458606:role/dsUser
+region         = us-west-2
+
+[profile formation-wilson]
+source_profile = assume-dsUser
+role_arn       = arn:aws:iam::550391708460:role/dsUser
+region         = us-west-2
+
+[profile formation-samba]
+source_profile = assume-dsUser
+role_arn       = arn:aws:iam::266607423911:role/dsUser
+region         = us-west-2
+
+[profile formation-penguin]
+source_profile = assume-dsUser
+role_arn       = arn:aws:iam::882130584304:role/dsUser
+region         = us-west-2
+
+[profile formation-jazz]
+source_profile = assume-dsUser
+role_arn       = arn:aws:iam::425536095478:role/dsUser
+region         = us-west-2
+
+[profile formation-rook]
+source_profile = assume-dsUser
+role_arn       = arn:aws:iam::120222100503:role/dsUser
+region         = us-west-2
+
+[profile formation-data-platform-dev]
+source_profile = assume-dsUser
+role_arn       = arn:aws:iam::086183382223:role/dsUser
+region         = us-west-2
+
+[profile formation-acme]
+source_profile = assume-dsUser
+role_arn       = arn:aws:iam::005865263632:role/dsUser
+region         = us-west-2
+
+[profile formation-platform-dev]
+source_profile = assume-dsUser
+role_arn       = arn:aws:iam::001927760305:role/dsUser
+region         = us-west-2
+
+[profile formation-platform-prod]
+source_profile = assume-dsUser
+role_arn       = arn:aws:iam::230819873951:role/dsUser
+region         = us-west-2
+
+[valkyrie-prod]
+aws_access_key_id     = ASIA3J6DB7BEQW6BTT7A
+aws_secret_access_key = NEOrAy5ndvfaBnS77NYYRz5USrnkb3z4Zh0MIyrI
+aws_session_token     = IQoJb3JpZ2luX2VjEBYaCXVzLXdlc3QtMiJIMEYCIQDKmtM80hbmI4IPreEwVSb2RAvtSKwUdGXpO67os4ro/AIhAKBXmXIbLvqLsSgeey9hpzjfZzdiY2cu+MYt0OhHuKI9KqICCE8QAhoMNzc3MjYxMjgzNDAxIgytAeeKLLqAI9pQKcEq/wEfeKgg6PGNDlgxtznHbvqWtsrYAu0mX7MjqfRZxoedD6FzBwC1v4KD6pnwzfd3KE8ochKvaNrI2GnIaXwDc/FxRmSjS5eIr+pv7bBbfxowi/p/I+RPwuwrSLwFqPYIhP0a5KOQmRafdmrUox/iEDzh2JIEIsOFjIRUKFrwbia3zXuPjEag0XpLChGrwM3CsbadRlUjAsd5PMc04JsKHh7fQccgl5JmWfaTYoGLI2lHUarhk8Enf6BDPP/ow7NVZVyHMYhwaWcXO4va9rS5O81JojSR5W6tOFfkRg7H9Q1lDNuvD3jbxGNETtZ6quTufLWq7KCFi4S/kB3o0zXBbO8wmc7mjwY6nAGAoZOIjlSEP0WP7IUfiWEGcnWKWDneWtDvGT4NIu1LJHN8uez/L1A36QVBJnYGikdmcipjauUcvX75s6zJmA3iiuW3sMUne/GAKu3SXByissfZGP6eMZCewLuZFG9zb6aWKnAPfNidM/U0wYmsjdAH0/iAQ+nugiOCR8DIEGJLM5zf5NTpv/4q4Zr6PfVQ3M+QTsgyCSjchvd92lw=
+aws_security_token    = IQoJb3JpZ2luX2VjEBYaCXVzLXdlc3QtMiJIMEYCIQDKmtM80hbmI4IPreEwVSb2RAvtSKwUdGXpO67os4ro/AIhAKBXmXIbLvqLsSgeey9hpzjfZzdiY2cu+MYt0OhHuKI9KqICCE8QAhoMNzc3MjYxMjgzNDAxIgytAeeKLLqAI9pQKcEq/wEfeKgg6PGNDlgxtznHbvqWtsrYAu0mX7MjqfRZxoedD6FzBwC1v4KD6pnwzfd3KE8ochKvaNrI2GnIaXwDc/FxRmSjS5eIr+pv7bBbfxowi/p/I+RPwuwrSLwFqPYIhP0a5KOQmRafdmrUox/iEDzh2JIEIsOFjIRUKFrwbia3zXuPjEag0XpLChGrwM3CsbadRlUjAsd5PMc04JsKHh7fQccgl5JmWfaTYoGLI2lHUarhk8Enf6BDPP/ow7NVZVyHMYhwaWcXO4va9rS5O81JojSR5W6tOFfkRg7H9Q1lDNuvD3jbxGNETtZ6quTufLWq7KCFi4S/kB3o0zXBbO8wmc7mjwY6nAGAoZOIjlSEP0WP7IUfiWEGcnWKWDneWtDvGT4NIu1LJHN8uez/L1A36QVBJnYGikdmcipjauUcvX75s6zJmA3iiuW3sMUne/GAKu3SXByissfZGP6eMZCewLuZFG9zb6aWKnAPfNidM/U0wYmsjdAH0/iAQ+nugiOCR8DIEGJLM5zf5NTpv/4q4Zr6PfVQ3M+QTsgyCSjchvd92lw=
+
